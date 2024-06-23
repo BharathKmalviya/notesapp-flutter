@@ -1,111 +1,171 @@
 import 'package:flutter/material.dart';
+import 'package:notes/widgets/recent_notes_item.dart';
 
-// dart
-void main() {
-  // client, di, db, abcd,
-  // flutter
-  runApp(const NotesApp());
-}
+void main() => runApp(NoteApp(
+      key: UniqueKey(),
+    ));
 
-class NotesApp extends StatelessWidget {
-  const NotesApp({super.key});
+class NoteApp extends StatelessWidget {
+  const NoteApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+      home: NotesLandingPage(
+        key: UniqueKey(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class NotesLandingPage extends StatefulWidget {
+  const NotesLandingPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<StatefulWidget> createState() {
+    return _NotesLandingPageState();
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _incrementCounter() {
-    _counter++;
-    print('counter:$_counter');
-    setState(() {});
-  }
+class _NotesLandingPageState extends State<NotesLandingPage> {
+  final headerTextStyle =
+      const TextStyle(fontWeight: FontWeight.w500, fontSize: 16);
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        backgroundColor: Colors.amber,
+        actions: const [Icon(Icons.search)],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Row(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+      drawer: Container(
+        width: 300,
+        color: Colors.white,
+        child: const SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Homepage'),
+              SizedBox(
+                height: 16,
+              ),
+              Text('Favorites'),
+              Spacer(
+                flex: 2,
+              ),
+              Text('Logout'),
+            ],
+          ),
+        ),
+      ),
+      body: Padding(
+        padding:const EdgeInsets.only(left: 16, top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             const Text(
-              'You have pushed the button this many times:',
+              'My Notes',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: 16,
             ),
             Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              'Reminders',
+              style: headerTextStyle,
             ),
+            const SizedBox(
+              height: 8,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    padding:const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: const Text(
+                      'Daily Supplements',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: const Text(
+                      'Pick up mail from Mumbai',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: const Text(
+                      'Run',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    child: const Text(
+                      'Daily Supplements',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text('Recent Notes', style: headerTextStyle),
+            const SizedBox(
+              height: 8,
+            ),
+            const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  RecentNotesItem(),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  RecentNotesItem(),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  RecentNotesItem(),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text('Daily Tasks', style: headerTextStyle),
           ],
         ),
       ),
-
-      drawer: Container(
-        color: Colors.red,
-        width: 100,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 }
