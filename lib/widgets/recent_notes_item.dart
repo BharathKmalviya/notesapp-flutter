@@ -5,9 +5,7 @@
 
 // Flutter => trees to build UI, Keys
 
-
 import 'package:flutter/material.dart';
-
 import 'package:notes_app_cli/notes_app_cli.dart';
 
 class RecentNotesItem extends StatelessWidget {
@@ -15,6 +13,7 @@ class RecentNotesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  print(NoteController().notes);
     return Container(
       width: 150,
       decoration: BoxDecoration(

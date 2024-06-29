@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notes/db/models/note.dart';
+import 'package:notes/db/note_db.dart';
 import 'package:notes/widgets/recent_notes_item.dart';
 
 void main() => runApp(NoteApp(
@@ -60,13 +63,26 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
         ),
       ),
       body: Padding(
-        padding:const EdgeInsets.only(left: 16, top: 8),
+        padding: const EdgeInsets.only(left: 16, top: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'My Notes',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+            GestureDetector(
+              onTap: () async {
+                final db = NoteDB();
+                db.registerOnInit((onInit) async {
+                  if (onInit) {
+                    await db.saveNote(
+                        NoteModel(title: 'hello', createdAt: DateTime.now()));
+                    final notes = await db.getAllNotes();
+                    print(notes);
+                  }
+                });
+              },
+              child: const Text(
+                'My Notes',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
+              ),
             ),
             const SizedBox(
               height: 16,
@@ -86,7 +102,8 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
                     decoration: const BoxDecoration(
                         color: Colors.green,
                         borderRadius: BorderRadius.all(Radius.circular(4))),
-                    padding:const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: const Text(
                       'Daily Supplements',
                       style: TextStyle(color: Colors.white, fontSize: 16),
