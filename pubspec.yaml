@@ -37,8 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   notes_app_cli:
     path: ./packages/notes_app_cli
-  dumb:
-    path: ./packages/dumb
+
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.3

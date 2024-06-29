@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:notes/db/models/note.dart';
 import 'package:notes/db/note_db.dart';
 import 'package:notes/widgets/recent_notes_item.dart';
+import 'package:notes_app_cli/notes/index.dart';
 
 void main() => runApp(NoteApp(
       key: UniqueKey(),
@@ -30,9 +31,42 @@ class NotesLandingPage extends StatefulWidget {
   }
 }
 
+class NoteLandingController {
+  static Note fromNoteModelToNote(NoteModel noteModel) {
+    return Note(
+        id: noteModel.id,
+        title: noteModel.title,
+        description: noteModel.description);
+  }
+}
+
 class _NotesLandingPageState extends State<NotesLandingPage> {
   final headerTextStyle =
       const TextStyle(fontWeight: FontWeight.w500, fontSize: 16);
+
+  List<Note> recentNotes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    updateRecentNotes();
+  }
+
+  void updateRecentNotes() {
+    final db = NoteDB.instance;
+    db.registerOnInit((bool onInit) async {
+      if (onInit) {
+        final List<NoteModel> noteDbModels = await db.getAllNotes();
+
+        final List<Note> notes = noteDbModels
+            .map((eachNoteModel) =>
+                NoteLandingController.fromNoteModelToNote(eachNoteModel))
+            .toList();
+        recentNotes = notes;
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,22 +101,9 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
-              onTap: () async {
-                final db = NoteDB();
-                db.registerOnInit((onInit) async {
-                  if (onInit) {
-                    await db.saveNote(
-                        NoteModel(title: 'hello', createdAt: DateTime.now()));
-                    final notes = await db.getAllNotes();
-                    print(notes);
-                  }
-                });
-              },
-              child: const Text(
-                'My Notes',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
-              ),
+            const Text(
+              'My Notes',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
             ),
             const SizedBox(
               height: 16,
@@ -160,20 +181,16 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
             const SizedBox(
               height: 8,
             ),
-            const SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: [
-                  RecentNotesItem(),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  RecentNotesItem(),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  RecentNotesItem(),
-                ],
+                children: recentNotes
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: RecentNotesItem(
+                              title: e.title, description: e.description),
+                        ))
+                    .toList(),
               ),
             ),
             const SizedBox(

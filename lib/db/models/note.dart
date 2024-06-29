@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+
 part 'note.g.dart';
 
 @collection
@@ -14,6 +15,5 @@ class NoteModel {
     required this.createdAt,
     this.description,
     this.isFavorite = false,
-
   });
 }

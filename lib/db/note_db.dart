@@ -7,9 +7,11 @@ class NoteDB {
   bool initiated = false;
   List<Function(bool onInit)> _listeners = [];
 
-  NoteDB() {
-    _init();
+  NoteDB._() {
+    _initDb();
   }
+
+  static NoteDB instance = NoteDB._();
 
   void registerOnInit(Function(bool onInit) init) {
     _listeners.add(init);
@@ -19,23 +21,24 @@ class NoteDB {
   }
 
   void notify() {
-    for (var element in _listeners) {
-      element(initiated);
+    for (Function(bool) each in _listeners) {
+      each(initiated);
     }
   }
 
-  void _init() async {
+  Future<void> _initDb() async {
     final dir = await getApplicationDocumentsDirectory();
     isar = await Isar.open(
       [NoteModelSchema],
       directory: dir.path,
     );
+
     initiated = true;
     notify();
   }
 
   Future<List<NoteModel>> getAllNotes() {
-    return isar.noteModels.where(distinct: true).findAll();
+    return isar.noteModels.where().findAll();
   }
 
   Future<void> saveNote(NoteModel note) async {
