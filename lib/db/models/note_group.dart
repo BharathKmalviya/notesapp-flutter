@@ -1,7 +1,10 @@
 // group of notes
 
+import 'package:isar/isar.dart';
+
 import 'note.dart';
 
+@collection
 class NoteGroupModel {
   final int id;
   final List<NoteModel> notes;

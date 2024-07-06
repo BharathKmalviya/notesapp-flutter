@@ -9,11 +9,13 @@ class NoteModel {
   final String? description;
   final DateTime createdAt;
   final bool isFavorite;
+  final bool isDeleted;
 
   NoteModel({
     required this.title,
     required this.createdAt,
     this.description,
     this.isFavorite = false,
+    this.isDeleted=false,
   });
 }
