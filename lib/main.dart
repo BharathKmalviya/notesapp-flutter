@@ -1,9 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:notes/db/models/note.dart';
+import 'package:notes/db/note_db.dart';
 import 'package:notes/widgets/recent_notes_item.dart';
+import 'package:notes_app_cli/notes/index.dart';
 
-void main() => runApp(NoteApp(
-      key: UniqueKey(),
-    ));
+GetIt getIt = GetIt.instance;
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  getIt.registerSingleton(NoteDB.instance);
+  runApp(NoteApp(
+    key: UniqueKey(),
+  ));
+}
 
 class NoteApp extends StatelessWidget {
   const NoteApp({super.key});
@@ -27,9 +38,42 @@ class NotesLandingPage extends StatefulWidget {
   }
 }
 
+class NoteLandingController {
+  static Note fromNoteModelToNote(NoteModel noteModel) {
+    return Note(
+        id: noteModel.id,
+        title: noteModel.title,
+        description: noteModel.description);
+  }
+}
+
 class _NotesLandingPageState extends State<NotesLandingPage> {
   final headerTextStyle =
-      const TextStyle(fontWeight: FontWeight.w500, fontSize: 16);
+  const TextStyle(fontWeight: FontWeight.w500, fontSize: 16);
+
+  List<Note> recentNotes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    updateRecentNotes();
+  }
+
+  void updateRecentNotes() {
+    final db = getIt.get<NoteDB>();
+    db.registerOnInit((bool onInit) async {
+      if (onInit) {
+        final List<NoteModel> noteDbModels = await db.getAllNotes();
+
+        final List<Note> notes = noteDbModels
+            .map((eachNoteModel) =>
+            NoteLandingController.fromNoteModelToNote(eachNoteModel))
+            .toList();
+        recentNotes = notes;
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +104,7 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
         ),
       ),
       body: Padding(
-        padding:const EdgeInsets.only(left: 16, top: 8),
+        padding: const EdgeInsets.only(left: 16, top: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,7 +130,8 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
                     decoration: const BoxDecoration(
                         color: Colors.green,
                         borderRadius: BorderRadius.all(Radius.circular(4))),
-                    padding:const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: const Text(
                       'Daily Supplements',
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -100,7 +145,7 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
                         color: Colors.green,
                         borderRadius: BorderRadius.all(Radius.circular(4))),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: const Text(
                       'Pick up mail from Mumbai',
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -114,7 +159,7 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
                         color: Colors.green,
                         borderRadius: BorderRadius.all(Radius.circular(4))),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: const Text(
                       'Run',
                       style: TextStyle(color: Colors.white, fontSize: 16),
@@ -143,20 +188,17 @@ class _NotesLandingPageState extends State<NotesLandingPage> {
             const SizedBox(
               height: 8,
             ),
-            const SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: [
-                  RecentNotesItem(),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  RecentNotesItem(),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  RecentNotesItem(),
-                ],
+                children: recentNotes
+                    .map((e) =>
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: RecentNotesItem(
+                          title: e.title, description: e.description),
+                    ))
+                    .toList(),
               ),
             ),
             const SizedBox(

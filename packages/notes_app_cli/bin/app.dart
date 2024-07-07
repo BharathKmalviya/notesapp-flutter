@@ -1,4 +1,4 @@
-import 'index.dart';
+import '../lib/notes/index.dart';
 
 void main() {
   // create notes to db
