@@ -1,0 +1,22 @@
+DB
+
+1. SQL 2. NO_SQL => file.sds [encrypted]
+
+"Structure" "Query" Language | SQLite, SQFLite,
+
+NOSQL => NO Structure, No Query, No language => File: flat, ...
+
+DB works in Browsers: Local-storage [key, value]
+Platform => SQL
+
+
+ISAR => NO SQL => file, local_storage
+
+Hive => NO SQL
+
+SQFLite, Room, moor, floor => SQL
+
+// Asynchronous
+
+async, await, Future<void>, Future<List<Note>>
+
